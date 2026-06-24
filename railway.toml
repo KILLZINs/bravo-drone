@@ -1,0 +1,10 @@
+[build]
+builder = "NIXPACKS"
+buildCommand = "npm install -g pnpm@latest && pnpm install && pnpm --filter @workspace/drone-site exec vite build --config vite.config.railway.ts"
+
+[deploy]
+startCommand = "npx serve@latest artifacts/drone-site/dist --single -l $PORT"
+healthcheckPath = "/"
+healthcheckTimeout = 100
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
