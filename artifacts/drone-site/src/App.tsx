@@ -181,6 +181,7 @@ const navLinks = [
   { name: "Serviços", href: "#services" },
   { name: "Portfólio", href: "#portfolio" },
   { name: "Diferenciais", href: "#why-us" },
+  { name: "Pacotes", href: "#precos" },
   { name: "Orçamento", href: "#orcamento" },
   { name: "Contato", href: "#contact" },
 ];
@@ -603,6 +604,146 @@ function WhyUs() {
   );
 }
 
+const PLANS = [
+  {
+    name: "Essencial",
+    badge: null,
+    price: "A consultar",
+    description: "Ideal para imóveis, eventos e pequenas produções.",
+    features: [
+      "Até 2h de voo",
+      "Fotografia aérea (20 fotos editadas)",
+      "Vídeo 4K até 3 min editado",
+      "Entrega em até 5 dias úteis",
+      "1 revisão inclusa",
+    ],
+    cta: "Solicitar Orçamento",
+    highlight: false,
+  },
+  {
+    name: "Profissional",
+    badge: "Mais Pedido",
+    price: "A consultar",
+    description: "Para construtoras, produções e inspeções completas.",
+    features: [
+      "Até 4h de voo",
+      "Fotografia ilimitada (30 editadas)",
+      "Vídeo 4K até 6 min editado + RAW",
+      "Relatório de inspeção em PDF",
+      "Entrega em até 3 dias úteis",
+      "2 revisões inclusas",
+    ],
+    cta: "Solicitar Orçamento",
+    highlight: true,
+  },
+  {
+    name: "Premium",
+    badge: null,
+    price: "A consultar",
+    description: "Projetos de mapeamento, topografia e produções cinematográficas.",
+    features: [
+      "Voos ilimitados no dia",
+      "Mapeamento ortofotográfico",
+      "Modelo 3D / nuvem de pontos",
+      "Edição cinema + entrega RAW completo",
+      "Entrega em até 2 dias úteis",
+      "Revisões ilimitadas",
+    ],
+    cta: "Solicitar Orçamento",
+    highlight: false,
+  },
+];
+
+function Pricing() {
+  return (
+    <section id="precos" className="py-32 bg-card border-t border-border relative">
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-16">
+          <h2 className="text-primary font-display font-bold tracking-[0.2em] uppercase text-sm mb-4">
+            Pacotes
+          </h2>
+          <h3 className="text-4xl md:text-5xl font-display font-bold text-white uppercase mb-4">
+            Escolha seu Plano
+          </h3>
+          <p className="text-muted-foreground text-lg max-w-xl mx-auto">
+            Pacotes personalizados para cada tipo de projeto. Valores sob consulta — cada missão é única.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {PLANS.map((plan, i) => (
+            <motion.div
+              key={plan.name}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.12, duration: 0.5 }}
+              className={`relative flex flex-col border p-8 transition-all duration-300 ${
+                plan.highlight
+                  ? "border-primary bg-background shadow-[0_0_40px_rgba(212,175,55,0.15)]"
+                  : "border-border bg-background/40 hover:border-primary/40"
+              }`}
+            >
+              {plan.badge && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <span className="bg-primary text-primary-foreground font-display font-bold text-xs uppercase tracking-widest px-4 py-1">
+                    {plan.badge}
+                  </span>
+                </div>
+              )}
+
+              <div className="mb-6">
+                <h4 className="text-xl font-display font-bold text-white uppercase tracking-widest mb-2">
+                  {plan.name}
+                </h4>
+                <p className="text-muted-foreground text-sm">{plan.description}</p>
+              </div>
+
+              <div className="mb-8">
+                <span className="text-primary font-display font-bold text-2xl">{plan.price}</span>
+              </div>
+
+              <ul className="space-y-3 mb-10 flex-1">
+                {plan.features.map((f) => (
+                  <li key={f} className="flex items-start gap-3 text-sm text-muted-foreground">
+                    <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+
+              <Button
+                asChild
+                className={`w-full font-display font-bold uppercase tracking-widest rounded-none h-12 group ${
+                  plan.highlight
+                    ? "bg-primary hover:bg-primary/80 text-primary-foreground"
+                    : "bg-transparent border border-border hover:border-primary text-white hover:bg-white/5"
+                }`}
+              >
+                <a
+                  href={`https://wa.me/${config.contact.whatsapp}?text=${encodeURIComponent(
+                    `Olá! Tenho interesse no pacote *${plan.name}* da Bravo Drone. Pode me passar mais informações?`
+                  )}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <MessageCircle className="mr-2 w-4 h-4" />
+                  {plan.cta}
+                  <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </a>
+              </Button>
+            </motion.div>
+          ))}
+        </div>
+
+        <p className="text-center text-muted-foreground text-sm mt-10">
+          * Deslocamentos fora da região podem ter custo adicional. Consulte disponibilidade.
+        </p>
+      </div>
+    </section>
+  );
+}
+
 function CTA() {
   return (
     <section id="contact" className="py-32 relative bg-primary overflow-hidden">
@@ -746,6 +887,7 @@ export default function App() {
         <Services />
         <Portfolio />
         <WhyUs />
+        <Pricing />
         <QuoteForm />
         <CTA />
       </main>
