@@ -17,17 +17,171 @@ import {
   MonitorPlay,
   Mail,
   Instagram,
+  Send,
+  CalendarDays,
+  MapPin,
+  User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import config from "./config";
 
 const WHATSAPP_LINK = `https://wa.me/${config.contact.whatsapp}?text=Olá! Gostaria de solicitar um orçamento para serviços de drone.`;
 
+const SERVICE_OPTIONS = [
+  "Fotografia e Filmagem Aérea",
+  "Filmagem para Imóveis / Construtoras",
+  "Inspeção de Estruturas",
+  "Mapeamento e Topografia",
+  "Cobertura de Evento / Show",
+  "Edição de Vídeo / Material RAW",
+  "Outro",
+];
+
+function QuoteForm() {
+  const [form, setForm] = useState({ name: "", service: "", date: "", city: "", details: "" });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const msg = [
+      `Olá! Gostaria de solicitar um orçamento. 👇`,
+      ``,
+      `*Nome:* ${form.name}`,
+      `*Serviço:* ${form.service}`,
+      `*Data prevista:* ${form.date || "A definir"}`,
+      `*Cidade/Local:* ${form.city}`,
+      form.details ? `*Detalhes:* ${form.details}` : "",
+    ].filter(Boolean).join("\n");
+
+    const url = `https://wa.me/${config.contact.whatsapp}?text=${encodeURIComponent(msg)}`;
+    window.open(url, "_blank", "noreferrer");
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  return (
+    <section id="orcamento" className="py-32 bg-card border-t border-border relative">
+      <div className="container mx-auto px-6">
+        <div className="max-w-2xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-primary font-display font-bold tracking-[0.2em] uppercase text-sm mb-4">
+              Orçamento
+            </h2>
+            <h3 className="text-4xl md:text-5xl font-display font-bold text-white uppercase mb-4">
+              Solicite seu Orçamento
+            </h3>
+            <p className="text-muted-foreground text-lg">
+              Preencha os dados abaixo e receba uma proposta personalizada direto no WhatsApp.
+            </p>
+          </div>
+
+          <motion.form
+            onSubmit={handleSubmit}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="space-y-5"
+          >
+            {/* Name */}
+            <div className="relative">
+              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+              <input
+                required
+                type="text"
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+                placeholder="Seu nome completo"
+                data-testid="input-name"
+                className="w-full bg-background border border-border text-white placeholder:text-muted-foreground pl-12 pr-4 py-4 font-sans focus:outline-none focus:border-primary transition-colors"
+              />
+            </div>
+
+            {/* Service */}
+            <div className="relative">
+              <Camera className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+              <select
+                required
+                name="service"
+                value={form.service}
+                onChange={handleChange}
+                data-testid="select-service"
+                className="w-full bg-background border border-border text-white pl-12 pr-4 py-4 font-sans focus:outline-none focus:border-primary transition-colors appearance-none cursor-pointer"
+              >
+                <option value="" disabled>Tipo de serviço</option>
+                {SERVICE_OPTIONS.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Date + City */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="relative">
+                <CalendarDays className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+                <input
+                  type="date"
+                  name="date"
+                  value={form.date}
+                  onChange={handleChange}
+                  data-testid="input-date"
+                  className="w-full bg-background border border-border text-white placeholder:text-muted-foreground pl-12 pr-4 py-4 font-sans focus:outline-none focus:border-primary transition-colors"
+                />
+              </div>
+              <div className="relative">
+                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+                <input
+                  required
+                  type="text"
+                  name="city"
+                  value={form.city}
+                  onChange={handleChange}
+                  placeholder="Cidade / Estado"
+                  data-testid="input-city"
+                  className="w-full bg-background border border-border text-white placeholder:text-muted-foreground pl-12 pr-4 py-4 font-sans focus:outline-none focus:border-primary transition-colors"
+                />
+              </div>
+            </div>
+
+            {/* Details */}
+            <textarea
+              name="details"
+              value={form.details}
+              onChange={handleChange}
+              rows={3}
+              placeholder="Detalhes adicionais (opcional)"
+              data-testid="textarea-details"
+              className="w-full bg-background border border-border text-white placeholder:text-muted-foreground px-4 py-4 font-sans focus:outline-none focus:border-primary transition-colors resize-none"
+            />
+
+            <Button
+              type="submit"
+              size="lg"
+              data-testid="button-submit-quote"
+              className="w-full bg-primary hover:bg-primary/80 text-primary-foreground font-display font-bold text-lg uppercase tracking-widest h-16 rounded-none group"
+            >
+              <MessageCircle className="mr-3 w-5 h-5" />
+              Enviar pelo WhatsApp
+              <Send className="ml-3 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Button>
+
+            <p className="text-center text-muted-foreground text-sm">
+              Você será redirecionado ao WhatsApp com a mensagem já preenchida.
+            </p>
+          </motion.form>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 const navLinks = [
   { name: "Início", href: "#home" },
   { name: "Serviços", href: "#services" },
   { name: "Portfólio", href: "#portfolio" },
   { name: "Diferenciais", href: "#why-us" },
+  { name: "Orçamento", href: "#orcamento" },
   { name: "Contato", href: "#contact" },
 ];
 
@@ -592,6 +746,7 @@ export default function App() {
         <Services />
         <Portfolio />
         <WhyUs />
+        <QuoteForm />
         <CTA />
       </main>
       <Footer />
