@@ -1,0 +1,12 @@
+[phases.setup]
+nixPkgs = ["nodejs_22"]
+cmds = ["npm install -g pnpm@9"]
+
+[phases.install]
+cmds = ["pnpm install --no-frozen-lockfile"]
+
+[phases.build]
+cmds = ["pnpm --filter @workspace/drone-site exec vite build --config vite.config.railway.ts"]
+
+[start]
+cmd = "npx serve@latest artifacts/drone-site/dist --single -l $PORT"
